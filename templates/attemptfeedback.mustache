@@ -1,0 +1,134 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_catquiz
+    Template which defines a quiz attempt feedback.
+    Classes required for JS:
+    * none
+    Data attributes required for JS:
+    * none
+    Context variables required for this template:
+    Example context (json):
+    {
+        "feedback": {
+            "enrolementmessage" : "String, <ul>...</ul>",
+            "studentfeedback": [
+                {
+                    "generatorname": "studentfeedback_generator_name",
+                    "heading": "Student Feedback 1",
+                    "comment": "This is a comment.",
+                    "content": "This is the content of student feedback 1.",
+                    "frontpage": "1",
+                    "othertabs": "1"
+                }
+            ],
+            "teacherfeedback": [
+                {
+                    "generatorname": "teacherfeedback_generator_name",
+                    "heading": "Teacher Feedback 1",
+                    "comment": "This is a comment.",
+                    "content": "This is the content of teacher feedback 1."
+                }
+            ]
+        },
+        "attemptid" : "111"
+    }
+}}
+
+
+{{#feedback}}
+    {{#studentfeedback}}
+        {{#frontpage}}
+            <h5 id= "feedback-generator-heading-frontpage-{{generatorname}}"> {{{heading}}} </h5>
+            <i id= "feedback-generator-comment-frontpage-{{generatorname}}"> {{{comment}}} </i>
+            <div id= "feedback-generator-content-frontpage-{{generatorname}}"> {{{content}}} </div>
+        {{/frontpage}}
+    {{/studentfeedback}}
+        <ul class="nav nav-tabs" id="myTab" role="tablist" style="list-style: none">
+    {{#studentfeedback}}
+        {{#othertabs}}
+        <li class="nav-item">
+            <a class="nav-link feedbacktab"
+                id="{{generatorname}}-othertabs"
+                data-toggle="tab"
+                data-attemptid="{{attemptid}}"
+                data-feedbackname={{generatorname}}
+                data-feedbackname-translated="{{heading}}"
+                href="#{{generatorname}}_feedbacktab--{{attemptid}}"
+                role="tab"
+                aria-controls="{{generatorname}}_feedbacktab--{{attemptid}}"
+                aria-selected="true">{{heading}}
+            </a>
+        </li>
+        {{/othertabs}}
+    {{/studentfeedback}}
+    {{#teacherfeedback}}
+            <li class="nav-item">
+                <a class="nav-link feedbacktab"
+                    id="{{generatorname}}-teacherfeedback"
+                    data-toggle="tab"
+                    data-attemptid="{{attemptid}}"
+                    data-feedbackname="{{generatorname}}"
+                    data-feedbackname-translated="{{heading}}"
+                    href="#{{generatorname}}_feedbacktab--{{attemptid}}"
+                    role="tab"
+                    aria-controls="{{generatorname}}_feedbacktab--{{attemptid}}"
+                    aria-selected="false">{{heading}}
+                </a>
+            </li>
+    {{/teacherfeedback}}
+    {{#studentfeedback.0}}
+        </ul>
+        <div class="tab-content" id="myTabContent" style="margin:20px">
+    {{/studentfeedback.0}}
+
+    {{#studentfeedback}}
+        {{#othertabs}}
+            <div class="tab-pane fade" id="{{generatorname}}_feedbacktab--{{attemptid}}" role="tabpanel" aria-labelledby="{{generatorname}}-othertabs">
+                <div id="feedbackcontent-{{generatorname}}">
+                    <h5 id= "feedback-generator-heading-othertabs-{{generatorname}}"> {{{heading}}} </h5>
+                    <i id= "feedback-generator-comment-othertabs-{{generatorname}}"> {{{comment}}} </i>
+                    <div id= "feedback-generator-content-othertabs-{{generatorname}}"> {{{content}}} </div>
+                </div>
+            </div>
+        {{/othertabs}}
+    {{/studentfeedback}}
+    {{#teacherfeedback}}
+            <div class="tab-pane fade" id="{{generatorname}}_feedbacktab--{{attemptid}}" role="tabpanel" aria-labelledby="{{generatorname}}-teacherfeedback">
+                <div id="feedbackcontent-{{generatorname}}">
+                    <h5 id= "feedback-generator-heading-teacherfb-{{generatorname}}"> {{{heading}}} </h5>
+                    <i id= "feedback-generator-comment-teacherfb-{{generatorname}}"> {{{comment}}} </i>
+                    <div id= "feedback-generator-content-teacherfb-{{generatorname}}"> {{{content}}} </div>
+                </div>
+            </div>
+    {{/teacherfeedback}}
+    {{#studentfeedback.0}}
+        </div>
+    {{/studentfeedback.0}}
+{{/feedback}}
+
+{{#enrolementmessage}}
+<div class="container mt-5">
+  <div class="alert alert-info" role="alert" style="line-height:2">
+    <h4 class="alert-heading">{{#str}} enrolmentmessagetitle, local_catquiz {{/str}}</h4>
+    {{{enrolementmessage}}}
+  </div>
+</div>
+{{/enrolementmessage}}
+
+{{#js}}
+    require(['local_catquiz/feedback'], function(init) {
+      init.init();
+  });
+{{/js}}
